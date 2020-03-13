@@ -1,0 +1,20 @@
+.heading{
+    font-weight: 400;
+    color: #282c34;
+    font-size: 35px;
+  
+  }
+  .signup-form{
+    width: 40%;
+  }
+  .link{
+    text-decoration: none;
+    color: rgb(92,184,92);
+    font-size: 15px;
+    margin: 0 auto;
+    
+  }
+  .signup-input{
+    border: 1px solid #e8e8e8e8;
+    border-radius: 7px;
+  }
