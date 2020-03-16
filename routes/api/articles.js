@@ -12,7 +12,7 @@ var User = require('../../models/User')
 // });
 
 //Showing all article --incomplete had to work with author query parameters
-router.get('/', (req,res)=>{
+router.get('/', async(req,res)=>{
    try {
        if(req.query){
            const query = req.query
@@ -37,7 +37,6 @@ router.get('/', (req,res)=>{
                })
            }
         //    var articlelist = await Article.find({})
-        console.log()
        }
        
        res.json(articlelist)
@@ -200,7 +199,7 @@ router.get('/feed',auth.verifyToken, async (req, res, next)=>{
                     authorId:{
                         $in: curUser.followingArr
                     }
-            })
+            }).sort({"createdAt": -1}).limit(20)
         console.log(followedArticles);
         res.json(followedArticles)
 

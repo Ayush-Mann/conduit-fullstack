@@ -34,7 +34,7 @@ var articleSchema = new Schema({
         default:false,
     }
     
-})
+},{timestamps:true})
 articleSchema.pre('save',async function(next){
     
     var slug  = await slugit(this.title)

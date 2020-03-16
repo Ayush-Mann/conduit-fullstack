@@ -1,6 +1,6 @@
 import React from "react"   
 import axios from "axios"
-import {Link} from "react-router-dom"
+import {Link, withRouter} from "react-router-dom"
 import "./signing.css"
 
 class Login extends React.Component {
@@ -33,9 +33,10 @@ class Login extends React.Component {
 					localStorage.setItem("token", res.data.token);
 					// console.log({localStorage})
 					// this.props.history.push(`/`)
-			}).then(res =>
-					console.log(res)
-			)	
+			})
+			.then(()=>this.props.userLogged())
+			.then(this.props.history.push("/home"))
+
 	}
 
 	render() {
@@ -63,4 +64,4 @@ class Login extends React.Component {
 
 }
 
-export default Login
+export default withRouter(Login)

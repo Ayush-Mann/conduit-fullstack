@@ -6,7 +6,13 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+.upvote-btn{
+  cursor: pointer;
+}
+.aside-container{
+  width: 17rem !important;
+  
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -30,6 +36,14 @@
   color: #61dafb;
 }
 /* Header */
+.header-link{
+  display: flex;
+  justify-content: flex-end !important;
+}
+.header{
+  display: flex !important;
+  justify-content: space-between !important;
+}
 .navFont{
   font-weight: 400;
   color: rgb(183,191,199) ! important;

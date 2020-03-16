@@ -1,6 +1,6 @@
 import React from "react"   
 import axios from "axios"
-import {Link} from "react-router-dom"
+import {Link, withRouter} from "react-router-dom"
 import "./signing.css"
 
 
@@ -29,7 +29,9 @@ class Signup extends React.Component {
 							"Content-Type": "application/json"
 					},
 					data: {email: this.state.email, password: this.state.password, username:this.state.username}
-			}).then(res => console.log("axios working"))
+			})
+			.then(res => console.log("axios working"))
+			.then(this.props.history.push("/login"))
 	}
 
 	render() {
@@ -60,4 +62,4 @@ class Signup extends React.Component {
 
 }
 
-export default Signup
+export default withRouter(Signup)
