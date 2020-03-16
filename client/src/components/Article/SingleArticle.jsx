@@ -7,6 +7,7 @@ class SingleArticle extends React.Component{
         this.state={
             currrentArticle:null,
             
+            
         }
     }
     componentDidMount(){

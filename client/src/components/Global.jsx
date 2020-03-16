@@ -15,11 +15,16 @@ class Global extends React.Component{
 		this.state={
 			userArticles:null,
 			tagArticles:null,
-			currentTag:null
+			currentTag:null,
+			globalFeed:true
 			
 		}
 	}
-
+	handleGlobal=()=>{
+		this.setState({
+			globalFeed:true
+		})
+	}
 	handleClick=(atrib)=>{
 		axios(`api/articles?tag=${atrib}`,{
 			method:"GET",
@@ -30,7 +35,8 @@ class Global extends React.Component{
 			// console.log(res)
 			this.setState({
 				tagArticles:res.data,
-				currentTag:atrib
+				currentTag:atrib,
+				globalFeed:false
 			}))
 		
 
@@ -43,11 +49,14 @@ class Global extends React.Component{
 				<div className="container d-flex justify-content-between">
 					<section className=" col-md-8">
 						<div style={{width:'200px'}}>
-							<p className="text-success ml-4">{this.state.tagArticles?`${this.state.currentTag}`:"Global Feed"}</p>
+							<div className="d-flex">
+							<p onClick={this.handleGlobal} className="text-success ml-4" style={{cursor:"pointer"}}>Global Feed</p>
+							{this.state.globalFeed?null:<p className="text-success ml-4" style={{cursor:"pointer"}}>{this.state.currentTag}</p>} 
+							</div>
 							<hr className="border border-success w-75 ml-0" />
 						</div>
 						{
-							this.state.tagArticles?this.state.tagArticles.map((article,index)=>{
+							!this.state.globalFeed && this.state.tagArticles?this.state.tagArticles.map((article,index)=>{
 								return(
 									<div key={index} className="p-2">
 									<div>
@@ -93,9 +102,9 @@ class Global extends React.Component{
 					<p className="pt-3 pl-3">Popular tags</p>
 					<div className="d-flex pl-3 flex-wrap ">
 					{
-						this.props && this.props.tags? this.props.tags.map((tag,index)=>{
+						this.props && this.props.tags!=null ? this.props.tags.map((tag,index)=>{
 							return(
-								<div onClick={()=>this.handleClick(tag)}  className="border rounded-pill p-1 mb-1" style={{cursor:"pointer"}} key={index} style={{backgroundColor:'rgb(129,138,145)',color:"white",fontSize:"12px"}}>
+								<div onClick={()=>this.handleClick(tag)}  className="border rounded-pill p-1 mb-1" key={index} style={{backgroundColor:'rgb(129,138,145)',color:"white",fontSize:"12px",cursor:"pointer"}}>
 									{tag}
 								</div>
 							)
