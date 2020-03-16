@@ -16,6 +16,10 @@ var articleSchema = new Schema({
         required:true,
         
     },
+    body:{
+        type:String,
+        require:true
+    },
     comments:[{
         type:Schema.Types.ObjectId,
         ref:'Comment'
