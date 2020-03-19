@@ -12,6 +12,7 @@ import Global from "./components/Global"
 import CreateArticleForm from './components/Article/CreateArticle';
 import SingleArticle from "./components/Article/SingleArticle"
 import Setting from "./components/Setting"
+import Profile from "./components/Profile/index"
 
 class App extends React.Component{
   constructor(){
@@ -19,7 +20,8 @@ class App extends React.Component{
     this.state={
       articles:null,
       tags:null,
-      currentUser:localStorage.token ? true : false
+      currentUser:localStorage.token ? true : false,
+      userInfo:null
     }
   }
   userLogIn=()=>{
@@ -31,12 +33,21 @@ class App extends React.Component{
   }
  
   componentDidMount(){
+    axios('/api/user',{
+      method:"GET",
+      headers:{
+        "Content-Type":"application/json",
+        "authorization":localStorage.token||""
+      }
+    }).then(res=>this.setState({
+      userInfo:res.data
+    }))
     const articles = axios("/api/articles",{
       method:"GET",
       headers:{
           "Content-Type":"application/json"
       }
-    })
+    });
     const tags = axios("/api/tags",{
       method:"GET",
       headers:{
@@ -47,59 +58,39 @@ class App extends React.Component{
       this.setState({
         articles: res[0].data,
         tags: res[1].data
-
+        
       })
     )
   }
-
-  // privateRoutes=()=>{
-  //   return(
-  //     <>
-  //        <Route exact path="/home">
-  //         <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
-  //       </Route>
-      
-  //       <Route path="/articles/create">
-  //         <CreateArticleForm />
-  //       </Route>
-  //       <Route path="/setting">
-  //         <Setting />
-  //       </Route>
-  //     </>
-  //   )
+  // adddingNewArticle=(article)=>{
+  //   console.log("sdasdasdasd")
+  //   this.setState({
+  //     articles:this.state.articles.concat(article)
+  //   })
   // }
 
-  // publicRoutes=()=>{
-  //   return(
-  //     <>
-  //        <Route exact path="/">
-  //         <Global articles={this.state.articles} tags={this.state.tags}/>
-  //       </Route>
-  //       <Route path="/register">
-  //         <Signup />
-  //       </Route>
-  //       <Route path="/login">
-  //         <Login userLogged={this.userLogIn} />
-  //       </Route>
-  //       <Route exact path="/home">
-  //         <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
-  //       </Route>
-      
-  //       <Route path="/articles/create">
-  //         <CreateArticleForm />
-  //       </Route>
-  //       <Route path="/setting">
-  //         <Setting />
-  //       </Route>
-  //     </>
-  //   )
-  // }
-  render(){
+  privateRoutes=()=>{
     return(
-      <>
-        {
-          localStorage.token ? <Headercm currentUser={this.state.currentUser}/>:<Header />
-        }
+      <Switch>
+        {console.log("private")}
+        <Route exact path="/home">
+          <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
+        </Route>
+        <Route path="/articles/create" render={(props)=> <CreateArticleForm {...props} />} />
+        <Route exact path="/articles/p/:slug" render={()=><SingleArticle />} />
+        <Route path="/setting">
+          <Setting user={this.state.userInfo && this.state.userInfo}/>
+        </Route>
+        <Route path="/profile" render={()=><Profile/>} />
+        <Route path="/*" render={()=><h1>404 page</h1>}/>
+      </Switch>
+    )
+  }
+
+  publicRoutes=()=>{
+    return(
+      <Switch>
+      {console.log("public")}
          <Route exact path="/">
           <Global articles={this.state.articles} tags={this.state.tags}/>
         </Route>
@@ -109,23 +100,28 @@ class App extends React.Component{
         <Route path="/login">
           <Login userLogged={this.userLogIn} />
         </Route>
-        <Route exact path="/home">
-          <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
-        </Route>
-      
-        <Route path="/articles/create">
-          <CreateArticleForm />
-        </Route>
-        <Route path="/setting">
-          <Setting />
-        </Route>
-        <Route path="/home/tags/:tag">
-          <Global />
-        </Route>
-        <Route path="/articles/:slug">
+        
+        <Route exact path="/articles/p/:slug">
           <SingleArticle />
         </Route>
-        
+        <Route exact path="/home/tags/:tag">
+          <Global />
+        </Route>
+       
+        <Route path="/*" render={()=><h1>404 page</h1>}/>
+      </Switch>
+    )
+  }
+  render(){
+    return(
+      <>
+        {
+          localStorage.token && this.state.userInfo ? <Headercm currentUser={this.state.userInfo}/>:<Header />
+        }
+         
+        {
+          localStorage.token && this.state.userInfo ?this.privateRoutes():this.publicRoutes()
+        }
        
       </>
     )

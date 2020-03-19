@@ -26,6 +26,7 @@ router.post('/login', async (req, res)=>{
         var token = await auth.generateJWT(user)
         user.token = token
         // res.send("success")
+        console.log("token",token)
         user.save()
         res.json(token)
     }catch(error){

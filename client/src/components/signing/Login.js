@@ -27,15 +27,27 @@ class Login extends React.Component {
 							"Content-Type": "application/json"
 					},
 					data: {email: this.state.email, password: this.state.password}
-			}).then(res => {
+			})
+			// .then(users=>{
+			// 	if(users.errors){
+			// 		localStorage.setItem("isLoggedIn",false)
+			// 	}else{
+			// 		localStorage.setItem("isLoggedIn",true)
+			// 		this.props.history.push("/home")
+			// 	}
+			// })
+			// second way
+			.then(res => {
+					
 					console.log("yello ",res)
 					// this.props.setUser(res.data.profile);
-					localStorage.setItem("token", res.data.token);
+					localStorage.setItem("token", res.data);
+					
 					// console.log({localStorage})
 					// this.props.history.push(`/`)
 			})
-			.then(()=>this.props.userLogged())
-			.then(this.props.history.push("/home"))
+			.then(()=>this.props.userLogged()) 
+			.then(this.props.history.push("/home")) 
 
 	}
 
@@ -65,3 +77,4 @@ class Login extends React.Component {
 }
 
 export default withRouter(Login)
+// export default Login

@@ -5,6 +5,7 @@ import Feed from "./Feed/index"
 import axios from "axios"
 import {FaHeart} from "react-icons/fa"
 import { Link } from "react-router-dom"
+import Spinner from "../common/Spinner"
 
 const slug = React.createRef()
 
@@ -13,8 +14,10 @@ class Home extends React.Component{
 		super()
 		this.state={
             userArticles:null,
-            globalfeed:true
-			
+			globalfeed:true,
+			tagArticles:null,
+			currentTag:null,
+			updated:[]
 		}
 	}
     handleClickFeed=()=>{
@@ -24,9 +27,64 @@ class Home extends React.Component{
     }
     handleClickGlobal =()=>{
         this.setState({
-            globalfeed: true
+			globalfeed: true,
+			tagArticles:null
         })
-    }
+	}
+	componentDidMount(){
+		// axios("/api/articles/feed",{
+		// 	method:"GET",
+		// 	headers:{
+		// 		"Content-Type":"application/json",
+		// 		"authorization":localStorage.token || ""
+		// 	}
+		// }).then(res =>
+		// 	// res=> this.setState({
+		// 	// 	userArticles:res.data
+		// 	// })
+		// 	console.log(res)
+			
+		// )
+		axios("/api/articles",{
+			method:"GET",
+			headers:{
+				"Content-Type":"application/json"
+			}
+		}).then(res=>
+			// console.log(res.data,"cdm")
+			this.setState({
+				updated:res.data
+			})
+		)
+	}
+	// componentDidUpdate(prevProps,prevState){
+	// 	if(prevProps.articles!=this.props.articles){
+	// 		this.setState({
+	// 			updated:false
+	// 		})
+		
+	// 	}
+
+	// }
+
+	handleClick=(atrib)=>{
+		axios(`api/articles?tag=${atrib}`,{
+			method:"GET",
+			headers:{
+				"Content-Type":"application/json"
+			}
+		}).then(res=>
+			// console.log(res)
+			this.setState({
+				tagArticles:res.data,
+				currentTag:atrib,
+				
+			}))
+		
+
+	}
+
+	
 	render(){
 		return(
 			<div>
@@ -38,39 +96,74 @@ class Home extends React.Component{
                             </div>
                             <div>
                              <button onClick={this.handleClickGlobal} className="text-success ml-4 bg-white border-0 border-success">Global Feed</button>
-                            </div>	
+                            </div>
+							{this.state.tagArticles ?<p className="text-success ml-4 p-0" style={{cursor:"pointer"}}>{this.state.currentTag}</p>:null} 	
 						</div>
+						
 						{
-							this.state.globalfeed && this.props && this.props.articles ? this.props.articles.map((article,index)=>{
+							this.state.tagArticles?this.state.tagArticles.map((article,index)=>{
 								return(
+									<div key={index} className="p-2">
+									<div className="p-2 d-flex flex-row justify-content-between">
+										<div className="d-flex">
+											<img src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
+											<div className="ml-2">
+												<h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6>
+												<small className="text-disable">Created At:{article.createdAt.split("T")[0]}</small>
+											</div>
+										</div>
+										<div onClick={()=>{console.log("clicked")}} className="upvote-btn border border-success rounded p-2">
+											<FaHeart color="rgb(102,184,92)"/>
+											<span className="text-success">3</span>
+										</div>
+
+									{/* </div> */}
+									</div>
+											
+									<div className="p-2">
+										<h6 className="text-success mb-1">{article.title.toUpperCase()}</h6>
+										<p className="text-dark ">{article.description}</p>
+										<Link className="d-block text-secondary" style={{fontSize:"12px"}} to={`/articles/p/${article.slug}`}  ref={slug} onClick={this.handleClick} >Read more</Link>
+									</div>
+									<hr />
+								</div>
+								)
+											
+
+							}):
+							this.state.globalfeed && this.state.updated ? this.state.updated.map((article,index)=>{
+								return(
+
 									<div key={index} className="p-2">
 										<div className="p-2">
 											<div className="d-flex flex-row justify-content-between">
-											<img className="" src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
-												{/* h6 for author name and small for timestamps */}
-												<>
-													<h6></h6>
-													<small></small>
-												</>
+												<div className="d-flex">
+													<img className="" src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
+													<div className="ml-2">
+														<h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6>
+														<small className="text-disable">Created At:{article.createdAt.split("T")[0]}</small>
+													</div>
+
+												</div>
 												<div onClick={()=>{console.log("clicked")}} className="upvote-btn border border-success rounded p-2">
 													<FaHeart color="rgb(102,184,92)"/>
 													<span className="text-success">3</span>
 												</div>
 											</div>
 										</div>
-										<div>
-											<h6>{article.title}</h6>
-											<small>{article.description}</small>
-											<Link className="d-block" to="#"  ref={slug} onClick={this.handleClick} >Read more</Link>
+										<div className="p-2">
+											<h6 className="text-success mb-1">{article.title.toUpperCase()}</h6>
+											<p className="text-dark ">{article.description}</p>
+											<Link className="d-block text-secondary" style={{fontSize:"12px"}} to={`/articles/p/${article.slug}`}  ref={slug} onClick={this.handleClick} >Read more</Link>
 										</div>
 										<hr />
 									</div>
 								)
-                            }):(
-                                null
-                            )
+                            }):<Spinner />
+                            
                             
 						}
+						
 				</section>
 				<aside className="bg-light h-75  pb-3 border border-light aside-container">
 					<p className="pt-3 pl-3">Popular tags</p>
@@ -78,7 +171,7 @@ class Home extends React.Component{
 					{
 						this.props && this.props.tags? this.props.tags.map((tag,index)=>{
 							return(
-								<div className="border rounded-pill p-1 mb-1" key={index} style={{backgroundColor:'rgb(129,138,145)',color:"white",fontSize:"12px"}}>
+								<div onClick={()=>this.handleClick(tag)}  className="border rounded-pill p-1 mb-1" key={index} style={{backgroundColor:'rgb(129,138,145)',color:"white",fontSize:"12px",cursor:"pointer"}}>
 									{tag}
 								</div>
 							)
@@ -88,8 +181,8 @@ class Home extends React.Component{
 					</div>
 
 				</aside>
-        </div>
-      </div>
+        	</div>
+      	</div>
     )
 	}
 }

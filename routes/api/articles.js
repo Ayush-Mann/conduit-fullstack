@@ -19,7 +19,9 @@ router.get('/', async(req,res)=>{
            if(query.tag){
                Article.find({taglist:query.tag},(err,article)=>{
                    if(err) return next(err)
-                   res.send(article)
+               }).populate('authorId').exec((err,article)=> {
+                if(err) return next(err)
+                res.send(article)
                })
            }else if(query.author){
                 User.findOne({username:query.author})
@@ -33,8 +35,10 @@ router.get('/', async(req,res)=>{
            }else{
                Article.find({},(err,articles)=>{
                    if(err) return next(err)
-                   res.send(articles)
-               })
+               }).populate("authorId").exec((err,articles)=>{
+                   if(err) return next(err)
+                    res.send(articles)
+                })
            }
         //    var articlelist = await Article.find({})
        }
@@ -57,6 +61,7 @@ router.post('/',auth.verifyToken,async(req, res)=>{
         var userId = req.user.userID
         var title = req.body.title
         var slug  = slugit(title)
+        console.log(req.body)
         var taglistmodified = req.body.taglist.split(',')
         req.body.taglist = taglistmodified
          //taglist is an array of indivitual strings
@@ -191,6 +196,7 @@ router.get('/feed',auth.verifyToken, async (req, res, next)=>{
     try {
         console.log("test feed")
         var {email} = req.user
+        console.log("email",email)
         var curUser =  await User.findOne({email:email});
         console.log(curUser.followingArr);
         let followedArticles = await 

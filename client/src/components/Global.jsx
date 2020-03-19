@@ -45,7 +45,7 @@ class Global extends React.Component{
 	render(){
 		return(
 			<div>
-        	<Hero />
+        <Hero />
 				<div className="container d-flex justify-content-between">
 					<section className=" col-md-8">
 						<div style={{width:'200px'}}>
@@ -59,10 +59,26 @@ class Global extends React.Component{
 							!this.state.globalFeed && this.state.tagArticles?this.state.tagArticles.map((article,index)=>{
 								return(
 									<div key={index} className="p-2">
-									<div>
-										<h6>{article.title}</h6>
-										<small>{article.description}</small>
-										<Link className="d-block" to={`/${article.slug}`}  ref={slug} onClick={this.handleClick} >Read more</Link>
+									<div className="p-2 d-flex flex-row justify-content-between">
+										<div className="d-flex">
+											<img src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
+											<div className="ml-2">
+												<h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6>
+												<small className="text-disable">Created At:{article.createdAt.split("T")[0]}</small>
+											</div>
+										</div>
+										<div onClick={()=>{console.log("clicked")}} className="upvote-btn border border-success rounded p-2">
+											<FaHeart color="rgb(102,184,92)"/>
+											<span className="text-success">3</span>
+										</div>
+
+									{/* </div> */}
+									</div>
+											
+									<div className="p-2">
+										<h6 className="text-success mb-1">{article.title.toUpperCase()}</h6>
+										<p className="text-dark ">{article.description}</p>
+										<Link className="d-block text-secondary" style={{fontSize:"12px"}} to={`/articles/${article.slug}`}  ref={slug} onClick={this.handleClick} >Read more</Link>
 									</div>
 									<hr />
 								</div>
@@ -72,24 +88,27 @@ class Global extends React.Component{
 							}):this.props && this.props.articles ? this.props.articles.map((article,index)=>{
 									return(
 										<div key={index} className="p-2">
-											<div className="p-2">
-												<div className="d-flex flex-row justify-content-between">
-												<img className="" src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
-													{/* h6 for author name and small for timestamps */}
-													<>
-														<h6></h6>
-														<small></small>
-													</>
+											
+												<div className="p-2 d-flex flex-row justify-content-between">
+													<div className="d-flex">
+														<img src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
+														<div className="ml-2">
+															<h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6>
+															<small className="text-disable">Created At:{article.createdAt.split("T")[0]}</small>
+														</div>
+													</div>
 													<div onClick={()=>{console.log("clicked")}} className="upvote-btn border border-success rounded p-2">
 														<FaHeart color="rgb(102,184,92)"/>
 														<span className="text-success">3</span>
 													</div>
+
+												{/* </div> */}
 												</div>
-											</div>
-											<div>
-												<h6>{article.title}</h6>
-												<small>{article.description}</small>
-												<Link className="d-block" to={`/articles/${article.slug}`}  ref={slug} onClick={this.handleClick} >Read more</Link>
+											
+											<div className="p-2">
+												<h6 className="text-success mb-1">{article.title.toUpperCase()}</h6>
+												<p className="text-dark ">{article.description}</p>
+												<Link className="d-block text-secondary" style={{fontSize:"12px"}} to={`/articles/${article.slug}`}  ref={slug} onClick={this.handleClick} >Read more</Link>
 											</div>
 											<hr />
 										</div>
@@ -110,11 +129,9 @@ class Global extends React.Component{
 							)
 						}):null
 					}
-
 					</div>
-
 				</aside>
-        </div>
+        	</div>
       </div>
     )
 	}

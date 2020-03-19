@@ -16,12 +16,19 @@ router.get('/', function(req, res, next) {
 });
 
 // getting current user
-router.get("/user", auth.verifyToken, async(req, res)=>{
+router.get("/user", auth.verifyToken, async(req, res, next)=>{
   try {
-   var currentUser = await User.findOne({email:req.user.email})
-   res.json(currentUser)
-  } catch (error) {
-      console.log("current user ",error)
+   await (User.findOne({email:req.user.email}).populate("articlesCreated")
+   .exec((err, data)=>{
+     if(err) return next(err)
+     res.send(data)
+   }))
+
+  //  res.json(currentUser)
+  // } catch (error) {
+  //     console.log("current user ",error)
+  }catch(err){
+    console.log(err)
   }
 })
 
