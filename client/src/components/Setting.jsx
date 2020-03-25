@@ -15,6 +15,7 @@ class Setting extends React.Component{
             [name]:value
         })
     }
+    
     render(){
         return(
             <div className="container  font-size w-50">
@@ -36,8 +37,14 @@ class Setting extends React.Component{
                     <div className="form-group">
                         <input type="email" className="form-control"  placeholder="Enter password" />
                     </div>
-                    <div className="button d-flex justify-content-end ">
-                        <button type="submit"className="btn w-20 btn-lg px-4 btn-success">Update Setting</button>
+                    <div className="d-flex flex-row-reverse">
+                        <div className="button d-flex justify-content-end">
+                            <button type="submit"className="btn w-20 btn-lg px-4 btn-success">Update Setting</button>
+                        </div>
+                        <div className="button d-flex justify-content-end mr-2">
+                            <button onClick={()=>this.props.Logout()} type="submit"className="btn w-20 btn-md px-4 btn-success">Log out</button>
+                        </div>
+
                     </div>
                 </form>
             </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom"
+import {BrowserRouter as Router, Route, Switch,withRouter} from "react-router-dom"
 import './App.css';
 import axios from "axios"
 
@@ -30,6 +30,14 @@ class App extends React.Component{
         currentUser:true
       })
     )
+  }
+
+  userLoggedOut=()=>{
+    this.setState({
+      currentUser:false
+    })
+    localStorage.clear();
+    this.props.history.push('/')
   }
  
   componentDidMount(){
@@ -62,37 +70,33 @@ class App extends React.Component{
       })
     )
   }
-  // adddingNewArticle=(article)=>{
-  //   console.log("sdasdasdasd")
-  //   this.setState({
-  //     articles:this.state.articles.concat(article)
-  //   })
-  // }
-
+  
   privateRoutes=()=>{
+    console.log('called in private')
+
     return(
       <Switch>
         {console.log("private")}
+        <Route path="/articles/create" render={(props)=> <CreateArticleForm {...props} />} />
+        <Route path="/articles/p/:slug" component={SingleArticle} />
+        <Route path="/setting">
+          <Setting user={this.state.userInfo && this.state.userInfo} Logout={this.userLoggedOut}/>
+        </Route>
+        <Route path="/profile/:username" render={(props)=><Profile {...props}/>} />
         <Route exact path="/home">
           <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
         </Route>
-        <Route path="/articles/create" render={(props)=> <CreateArticleForm {...props} />} />
-        <Route exact path="/articles/p/:slug" render={()=><SingleArticle />} />
-        <Route path="/setting">
-          <Setting user={this.state.userInfo && this.state.userInfo}/>
-        </Route>
-        <Route path="/profile" render={()=><Profile/>} />
         <Route path="/*" render={()=><h1>404 page</h1>}/>
       </Switch>
     )
   }
 
   publicRoutes=()=>{
+    console.log('called in public')
     return(
       <Switch>
-      {console.log("public")}
          <Route exact path="/">
-          <Global articles={this.state.articles} tags={this.state.tags}/>
+          <Global articles={this.state.articles} tags={this.state.tags} />
         </Route>
         <Route path="/register">
           <Signup />
@@ -100,10 +104,8 @@ class App extends React.Component{
         <Route path="/login">
           <Login userLogged={this.userLogIn} />
         </Route>
-        
-        <Route exact path="/articles/p/:slug">
-          <SingleArticle />
-        </Route>
+        <Route path="/profile/:username" render={(props)=><Profile {...props}/>} />
+        <Route exact path="/articles/p/:slug" component={SingleArticle} />
         <Route exact path="/home/tags/:tag">
           <Global />
         </Route>
@@ -128,4 +130,4 @@ class App extends React.Component{
   }
 }
 
-export default App;
+export default withRouter(App);

@@ -51,21 +51,12 @@ class Home extends React.Component{
 				"Content-Type":"application/json"
 			}
 		}).then(res=>
-			// console.log(res.data,"cdm")
 			this.setState({
 				updated:res.data
 			})
 		)
 	}
-	// componentDidUpdate(prevProps,prevState){
-	// 	if(prevProps.articles!=this.props.articles){
-	// 		this.setState({
-	// 			updated:false
-	// 		})
-		
-	// 	}
 
-	// }
 
 	handleClick=(atrib)=>{
 		axios(`api/articles?tag=${atrib}`,{
@@ -108,7 +99,7 @@ class Home extends React.Component{
 										<div className="d-flex">
 											<img src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
 											<div className="ml-2">
-												<h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6>
+												<Link className="" to={`/profile/${article.authorId.username}`}><h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6></Link>
 												<small className="text-disable">Created At:{article.createdAt.split("T")[0]}</small>
 											</div>
 										</div>
@@ -140,7 +131,7 @@ class Home extends React.Component{
 												<div className="d-flex">
 													<img className="" src="https://i.imgur.com/g5qR3O8.png" style={{width:"40px",borderRadius:"50%"}}/>
 													<div className="ml-2">
-														<h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6>
+													<Link className="" to={`/profile/${article.authorId.username}`}><h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6></Link>
 														<small className="text-disable">Created At:{article.createdAt.split("T")[0]}</small>
 													</div>
 

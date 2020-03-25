@@ -45,7 +45,7 @@ class Global extends React.Component{
 	render(){
 		return(
 			<div>
-        <Hero />
+        <Hero title="Conduit"/>
 				<div className="container d-flex justify-content-between">
 					<section className=" col-md-8">
 						<div style={{width:'200px'}}>

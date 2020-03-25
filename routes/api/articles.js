@@ -11,8 +11,8 @@ var User = require('../../models/User')
 //   res.render('index', { title: 'Express' });
 // });
 
-//Showing all article --incomplete had to work with author query parameters
-router.get('/', async(req,res)=>{
+//Showing all article --incomplete but tag and author name done
+router.get('/', async(req,res,next)=>{
    try {
        if(req.query){
            const query = req.query
@@ -235,13 +235,18 @@ router.get('/feed',auth.verifyToken, async (req, res, next)=>{
 
 
 //Showing single article
-router.get('/:slug', async(req, res)=>{
+router.get('/:slug', async(req, res, next)=>{
     try {
         console.log("trying to find",req.params.slug)
         var toFind = req.params.slug 
-        var singleArticle = await Article.findOne({slug:toFind})
-        res.json(singleArticle)
-    } catch (error) {
+        await Article.findOne({slug:toFind})
+        .populate("authorId")
+        .exec((err,article)=>{
+            if(err) return next(err)
+            res.json(article)
+        })
+       
+    }catch (error) {
         console.log("No article found")
     }
     // Article.findOne({slug: toFind},(err,article)=>{

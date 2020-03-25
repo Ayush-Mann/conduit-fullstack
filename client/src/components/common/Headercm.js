@@ -23,7 +23,7 @@ class Headercm extends React.Component{
                             <NavLink activeClassName="text-dark" className="nav-link nav-item navFont" to="/home">Home</NavLink>
                             <NavLink activeClassName="text-dark" className="nav-link nav-item navFont" to="/articles/create"><FaRegEdit size="15" className="mr-1"/>New Post</NavLink>
                             <NavLink activeClassName="text-dark" className="nav-link nav-item navFont" to="/setting"><IoIosSettings className="mr-1"/>Settings</NavLink>
-                            <NavLink activeClassName="text-dark" className="nav-link nav-item navFont" to="/profile">{this.props.currentUser ? 'Profile':null}</NavLink>  
+                            <NavLink activeClassName="text-dark" className="nav-link nav-item navFont" to={`/profile/${this.props.currentUser.username}`}>{this.props.currentUser ? 'Profile':null}</NavLink>  
                             
                         </div>
                     </div>	
