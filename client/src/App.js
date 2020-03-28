@@ -77,6 +77,9 @@ class App extends React.Component{
     return(
       <Switch>
         {console.log("private")}
+        <Route exact path="/">
+          <Global articles={this.state.articles} tags={this.state.tags} />
+        </Route>
         <Route path="/articles/create" render={(props)=> <CreateArticleForm {...props} />} />
         <Route path="/articles/p/:slug" component={SingleArticle} />
         <Route path="/setting">

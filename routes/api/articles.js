@@ -129,7 +129,12 @@ router.post('/:slug/comments',auth.verifyToken, async(req, res)=>{
 router.get('/:slug/comments', (req, res, next)=>{
     
         Article.findOne({slug:req.params.slug})
-        .populate('comments')
+        .populate({
+            path:"comments",
+            populate:{
+                path:"authorId"
+            }
+        })
         .exec((err,data)=>{
             if(err){
                 return next(err);
@@ -143,7 +148,7 @@ router.get('/:slug/comments', (req, res, next)=>{
 router.delete('/:slug/comments/:id',async (req, res)=>{
     try {
         var deleted = await Comment.findOneAndDelete({_id:req.params.id})
-        res.send("deleted successfully")
+        res.json({deleted})
     } catch (error) {
         console.log(error)
     }

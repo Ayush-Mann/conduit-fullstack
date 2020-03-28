@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import Hero from "../Home/Hero"
 import { Link } from 'react-router-dom';
+import Spinner from "../common/Spinner"
+import {FaTrashAlt}  from "react-icons/fa"
 
 class SingleArticle extends React.Component {
 	constructor(props) {
@@ -9,7 +11,8 @@ class SingleArticle extends React.Component {
 		this.state = {
             currrentArticle: null,
             commentContent:null,
-            comments:[]
+            comments:[],
+            toggle:false
 		};
 	}
 	componentDidMount() {
@@ -30,7 +33,7 @@ class SingleArticle extends React.Component {
         Promise.all([article,comments])
         .then(res=> this.setState({
             currrentArticle:res[0].data,
-            comments:res[1].data.comments
+            comments:res[1].data.data.comments
         }))
 
 		// axios(`/api/articles/${this.props.match.params.slug}`, {
@@ -51,6 +54,22 @@ class SingleArticle extends React.Component {
             [name]:value
         })
     }
+    handleComment =(id)=>{
+        axios(`/api/articles/${this.props.match.params.slug}/comments/${id}`,{
+            method:"delete",
+
+        }).then(this.checkComments())
+    }
+    checkComments=()=>{
+        axios(`/api/articles/${this.props.match.params.slug}/comments`,{
+            method:"GET",
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        }).then(res=>this.setState({
+            comments:res.data.data.comments
+        }))
+    }
     postingComment=()=>{
         axios(`/api/articles/${this.state.currrentArticle.slug}/comments`,{
             method:"POST",
@@ -62,7 +81,11 @@ class SingleArticle extends React.Component {
             data:{
                 content:this.state.commentContent
             }
-        })
+        }).then(
+            res=>this.setState({
+                toggle:!this.state.toggle
+            })
+        ).then(this.checkComments())
     }
 	render() {
 		
@@ -100,7 +123,30 @@ class SingleArticle extends React.Component {
                                     <div className="clearfix"></div>
                                     <hr />
                                     <ul className="media-list">
-                                        <li className="media">
+                                        {
+                                            this.state.comments && this.state.comments ? this.state.comments.map((comment,index)=>{
+                                                return(
+                                                    <li key={index} className="media pb-2">
+                                                        <Link to="#" className="pull-left pr-2">
+                                                            <img src={`https://bootdey.com/img/Content/user_1.jpg`} alt={index} className="img-circle" />
+                                                        </Link>
+                                                        <div className="media-body">
+                                                            <span className="text-muted pull-right">
+                                                            <small className="text-muted">{comment.updatedAt.split("T")[0] }</small>
+                                                            </span>
+                                                            <strong className="text-success pl-2">{comment.authorId.username}</strong>
+                                                            <p>
+                                                                {comment.content}.
+                                                            </p>
+                                                            <FaTrashAlt onClick={()=>this.handleComment(comment._id)} style={{cursor:"pointer"}}/>
+                                                        </div>
+                                                        <hr />
+                                                    </li>
+                                                    
+                                                )
+                                            }):<Spinner />
+                                        }
+                                        {/* <li className="media">
                                             <Link to="#" classNameName="pull-left">
                                                 <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" className="img-circle" />
                                             </Link>
@@ -143,7 +189,7 @@ class SingleArticle extends React.Component {
                                                     Lorem ipsum dolor <a href="#">#sitamet</a> sit amet, consectetur adipiscing elit.
                                                 </p>
                                             </div>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
                             </div>
