@@ -3,7 +3,7 @@ import axios from 'axios';
 import Hero from "../Home/Hero"
 import { Link } from 'react-router-dom';
 import Spinner from "../common/Spinner"
-import {FaTrashAlt}  from "react-icons/fa"
+import {FaTrashAlt, FaHeart}  from "react-icons/fa"
 
 class SingleArticle extends React.Component {
 	constructor(props) {
@@ -56,7 +56,7 @@ class SingleArticle extends React.Component {
     }
     handleComment =(id)=>{
         axios(`/api/articles/${this.props.match.params.slug}/comments/${id}`,{
-            method:"delete",
+            method:"delete"
 
         }).then(this.checkComments())
     }
@@ -87,6 +87,12 @@ class SingleArticle extends React.Component {
             })
         ).then(this.checkComments())
     }
+    // favourite article function
+    favoriteArticle=()=>{
+        console.log(this.props.match.params.slug)
+    }
+
+
 	render() {
 		
 		return this.state.currrentArticle ? (
@@ -94,8 +100,9 @@ class SingleArticle extends React.Component {
 			    <div className="bg-dark container-fluid text-white">
 			        <div className="container p-2 pl-4">
 			            <h1 className="">{this.state.currrentArticle.title}</h1>
-			                <small>created at{this.state.currrentArticle.createdAt.split('T')[0]}</small>
-			        </div>
+                        <small><strong className="text-success pr-2">created at</strong>{this.state.currrentArticle.createdAt.split('T')[0]}</small><small><strong className="text-success pl-2">By </strong>{this.state.currrentArticle.authorId.username}</small>
+                        <FaHeart onClick={this.favoriteArticle}className="pl-2" size="30" color="red" style={{cursor:"pointer"}}/>
+                    </div>
 			    </div>
 			    <section className="container p-2 pl-4">
 			        {this.state.currrentArticle.description}

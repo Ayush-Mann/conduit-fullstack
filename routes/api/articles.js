@@ -163,7 +163,7 @@ router.post("/:slug/favourite",auth.verifyToken, async(req, res)=>{
         var user =  await User.findOne({email:email});
         await user.favouriteArticles.push(favArticle._id);
         user.save();
-        console.log(user)
+        // console.log(user)
         res.json({user})
         // console.log(User)
 

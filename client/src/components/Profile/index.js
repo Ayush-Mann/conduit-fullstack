@@ -9,7 +9,8 @@ class Profile extends React.Component{
         super()
         this.state={
             profileArticles:null,
-            myArticleFeed:false
+            myArticleFeed:false,
+            favouritedArticle:null
         }
     }
 
