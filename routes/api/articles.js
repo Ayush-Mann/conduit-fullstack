@@ -82,7 +82,8 @@ router.post('/',auth.verifyToken,async(req, res)=>{
 router.put('/:slug',auth.verifyToken, async(req, res)=>{
     try {
         var toFind  = req.params.slug
-        console.log(req.body)
+        // console.log(req.body)
+
         // var article = await Article.findOneAndUpdate({slug:toFind},req.body,{new:true})
         var article = await Article.findOne({slug:toFind})
         article.title = req.body.title;
@@ -115,7 +116,7 @@ router.post('/:slug/comments',auth.verifyToken, async(req, res)=>{
     try {
         req.body.authorId = req.user.userID
         var commentCreated = await Comment.create(req.body);
-        console.log("commentCreated",commentCreated)
+        // console.log("commentCreated",commentCreated)
         var commentedArticle = await Article.findOneAndUpdate({slug: req.params.slug},{$push:{comments: commentCreated.id }})
         // await commentedArticle.save()
         // console.log("commentedArticle",commentedArticle)
@@ -161,9 +162,14 @@ router.post("/:slug/favourite",auth.verifyToken, async(req, res)=>{
         favArticle.favourite=true;
         await favArticle.save();
         var user =  await User.findOne({email:email});
-        await user.favouriteArticles.push(favArticle._id);
+        if(user.favouriteArticles.includes(favArticle._id)){
+            return
+        }
+        else{ 
+            await user.favouriteArticles.push(favArticle._id);
+        }
         user.save();
-        // console.log(user)
+        console.log(user,"fav route")
         res.json({user})
         // console.log(User)
 
@@ -190,6 +196,7 @@ router.delete("/:slug/favourite",auth.verifyToken, async(req, res)=>{
           }
         user.save()
         console.log(user)
+
         res.json(user);
     } catch (error) {
         
@@ -242,7 +249,7 @@ router.get('/feed',auth.verifyToken, async (req, res, next)=>{
 //Showing single article
 router.get('/:slug', async(req, res, next)=>{
     try {
-        console.log("trying to find",req.params.slug)
+        // console.log("trying to find",req.params.slug)
         var toFind = req.params.slug 
         await Article.findOne({slug:toFind})
         .populate("authorId")

@@ -12,7 +12,9 @@ class SingleArticle extends React.Component {
             currrentArticle: null,
             commentContent:null,
             comments:[],
-            toggle:false
+            toggle:false,
+            fav:false
+            
 		};
 	}
 	componentDidMount() {
@@ -89,7 +91,28 @@ class SingleArticle extends React.Component {
     }
     // favourite article function
     favoriteArticle=()=>{
-        console.log(this.props.match.params.slug)
+        if(!this.state.fav){
+            axios(`/api/articles/${this.props.match.params.slug}/favourite`,{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                    "authorization":localStorage.token||""
+                }
+            }).then(res => this.setState({
+                fav:true
+            }))
+               
+        }else if(this.state.fav){
+            axios(`/api/articles/${this.props.match.params.slug}/favourite`,{
+                method:"DElETE",
+                headers:{
+                    "Content-Type":"application/json",
+                    "authorization":localStorage.token||""
+                }
+            }).then(res => this.setState({
+                fav:false
+            }))
+        }
     }
 
 
@@ -101,7 +124,7 @@ class SingleArticle extends React.Component {
 			        <div className="container p-2 pl-4">
 			            <h1 className="">{this.state.currrentArticle.title}</h1>
                         <small><strong className="text-success pr-2">created at</strong>{this.state.currrentArticle.createdAt.split('T')[0]}</small><small><strong className="text-success pl-2">By </strong>{this.state.currrentArticle.authorId.username}</small>
-                        <FaHeart onClick={this.favoriteArticle}className="pl-2" size="30" color="red" style={{cursor:"pointer"}}/>
+                        <FaHeart onClick={this.favoriteArticle}className="pl-2" size="30" color={this.state.fav?"red":"white"} style={{cursor:"pointer"}}/>
                     </div>
 			    </div>
 			    <section className="container p-2 pl-4">
