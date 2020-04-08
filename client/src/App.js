@@ -70,7 +70,8 @@ class App extends React.Component{
       })
     )
   }
-  
+  // follow user function
+
   handleFollow=(attrib)=>{
     axios(`/api/profiles/${attrib}/follow`,{
       method:"POST",
@@ -85,6 +86,23 @@ class App extends React.Component{
     )
     // console.log(attrib,"yellallluu")
   }
+
+  // unfollow user function
+
+  handleUnfollow=(attrib)=>{
+    axios(`/api/profiles/${attrib}/follow`,{
+      method:"DELETE",
+      headers:{
+        'authorization':localStorage.token||"",
+        'content-type':'application/json'
+      }
+    }).then(res=>this.setState({
+      userInfo:res.data
+    }))
+  }
+
+
+
   privateRoutes=()=>{
     console.log('called in private')
 
@@ -99,7 +117,7 @@ class App extends React.Component{
         <Route path="/setting">
           <Setting user={this.state.userInfo && this.state.userInfo} Logout={this.userLoggedOut}/>
         </Route>
-        <Route path="/profile/:username" render={(props)=><Profile {...props} currentUser={this.state.userInfo} followUser={this.handleFollow}/>} />
+        <Route path="/profile/:username" render={(props)=><Profile {...props} currentUser={this.state.userInfo} followUser={this.handleFollow} unfollowUser={this.handleUnfollow}/>} />
         <Route exact path="/home">
           <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
         </Route>

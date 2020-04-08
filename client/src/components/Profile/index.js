@@ -69,7 +69,7 @@ class Profile extends React.Component{
     render(){
         return(
             <>
-            <Hero title={this.props.match.params.username} currentUser={this.props.currentUser} followFunction={this.props.followUser}/>
+            <Hero title={this.props.match.params.username} currentUser={this.props.currentUser} unfollowUser={this.props.unfollowUser} followFunction={this.props.followUser}/>
             <div className="container p-4">
                 <div className="col-md-8">
                 <div style={{width:'200px'}}>

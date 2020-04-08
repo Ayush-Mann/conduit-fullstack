@@ -33,8 +33,8 @@ class Hero extends React.Component{
                     <p className="lead font-weight-light text-white">A place to share knowledge</p>
                     {
                         this.props.currentUser && this.props.currentUser.username !== this.props.match.params.username ? (
-                            this.state.visibleUser && this.props.currentUser.followingArr.includes(this.state.visibleUser)?
-                            <button onClick={()=>this.props.followFunction(this.props.title)} style={{background:'rgb(40,167,69)',border:'1px solid white',borderRadius:'4px',color:'white'}}>UnFollow</button>:<button>Follow</button>
+                            this.state.visibleUser && this.props.currentUser && this.props.currentUser.followingArr.includes(this.state.visibleUser._id)?
+                            <button onClick={()=>this.props.unfollowUser(this.props.title)} style={{background:'rgb(40,167,69)',border:'1px solid white',borderRadius:'4px',color:'white'}}>UnFollow</button>:<button onClick={()=>this.props.followFunction(this.props.title)} style={{background:'rgb(40,167,69)',border:'1px solid white',borderRadius:'4px',color:'white'}}>Follow</button>
                         ):null
                     }
                 </div>
