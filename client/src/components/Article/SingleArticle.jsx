@@ -13,7 +13,8 @@ class SingleArticle extends React.Component {
             commentContent:null,
             comments:[],
             toggle:false,
-            fav:false
+            fav:false,
+            extra:null
             
 		};
 	}
@@ -31,12 +32,23 @@ class SingleArticle extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
+        const favcheck= axios(`/api/user`,{
+            method:"GET",
+            headers:{
+                'content-type':'application/json',
+                'authorization':localStorage.token||""
+            }
+        })
 
-        Promise.all([article,comments])
+        Promise.all([article,comments, favcheck])
         .then(res=> this.setState({
             currrentArticle:res[0].data,
-            comments:res[1].data.data.comments
+            comments:res[1].data.data.comments,
+            extra:res[2].data.favouriteArticles
         }))
+        .then(data=>this.handleCheck())
+        
+        
 
 		// axios(`/api/articles/${this.props.match.params.slug}`, {
 		// 	method: 'GET',
@@ -114,8 +126,28 @@ class SingleArticle extends React.Component {
             }))
         }
     }
+    // follow user
+    handleAuthor =()=>{
+        console.log('chakna lora')
+    }
+    handleCheck =()=>{
 
+        console.log("yella")
+        this.state.extra.forEach(element=>{
+            if(this.state.currrentArticle.id===element){
+                console.log(element)
+                this.setState({
+                    fav:true
+                })
 
+                return true
+            }
+            this.setState({
+                fav:false
+            })
+            return false
+        })
+    }
 	render() {
 		
 		return this.state.currrentArticle ? (
@@ -123,8 +155,8 @@ class SingleArticle extends React.Component {
 			    <div className="bg-dark container-fluid text-white">
 			        <div className="container p-2 pl-4">
 			            <h1 className="">{this.state.currrentArticle.title}</h1>
-                        <small><strong className="text-success pr-2">created at</strong>{this.state.currrentArticle.createdAt.split('T')[0]}</small><small><strong className="text-success pl-2">By </strong>{this.state.currrentArticle.authorId.username}</small>
-                        <FaHeart onClick={this.favoriteArticle}className="pl-2" size="30" color={this.state.fav?"red":"white"} style={{cursor:"pointer"}}/>
+                        <small><strong className="text-success pr-2">created at</strong>{this.state.currrentArticle.createdAt.split('T')[0]}</small><Link style={{cursor:"pointer"}} to={`/profile/${this.state.currrentArticle.authorId.username}`}><strong className="text-success pl-2">By </strong>{this.state.currrentArticle.authorId.username}</Link>
+                        <FaHeart onClick={this.favoriteArticle}className="pl-2" size="30" color={()=>this.handleCheck()?"red":"white"} style={{cursor:"pointer"}}/>
                     </div>
 			    </div>
 			    <section className="container p-2 pl-4">

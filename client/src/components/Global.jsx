@@ -16,7 +16,8 @@ class Global extends React.Component{
 			userArticles:null,
 			tagArticles:null,
 			currentTag:null,
-			globalFeed:true
+			globalFeed:true,
+			tags:null
 			
 		}
 	}
@@ -40,6 +41,16 @@ class Global extends React.Component{
 			}))
 		
 
+	}
+	componentDidMount(){
+		axios(`/api/tags`,{
+			method:"GET",
+			headers:{
+				'content-type':'application/json'
+			}
+		}).then(res=>this.setState({
+			tags:res.data
+		}))
 	}
 
 	render(){
@@ -121,7 +132,7 @@ class Global extends React.Component{
 					<p className="pt-3 pl-3">Popular tags</p>
 					<div className="d-flex pl-3 flex-wrap ">
 					{
-						this.props && this.props.tags!=null ? this.props.tags.map((tag,index)=>{
+						this.props && this.state.tags!=null ? this.state.tags.map((tag,index)=>{
 							return(
 								<div onClick={()=>this.handleClick(tag)}  className="border rounded-pill p-1 mb-1" key={index} style={{backgroundColor:'rgb(129,138,145)',color:"white",fontSize:"12px",cursor:"pointer"}}>
 									{tag}

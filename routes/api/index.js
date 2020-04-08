@@ -31,6 +31,20 @@ router.get("/user", auth.verifyToken, async(req, res, next)=>{
     console.log(err)
   }
 })
+//Show favourited articles 
+router.get("/user/:username/favourited", async(req, res, next)=>{
+  try {
+   await (User.findOne({email:req.params.username}).populate("favouriteArticles")
+   .exec((err, data)=>{
+     if(err) return next(err)
+     console.log("abracadabre",data)
+     res.send(data)
+   }))
+
+  }catch(err){
+    console.log(err)
+  }
+})
 
 // updating a user 
 router.put('/user',auth.verifyToken, async(req, res)=>{

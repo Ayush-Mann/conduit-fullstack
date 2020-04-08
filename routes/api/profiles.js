@@ -6,7 +6,7 @@ var auth = require('../../modules/auth')
 // get profile
 router.get('/:username',async (req, res)=>{
     try {
-        var profile = await User.findOne({username:req.params.username},{username:1,email:1,bio:1,following:1})
+        var profile = await User.findOne({username:req.params.username},{username:1,email:1,bio:1,following:1,favouriteArticles:1})
         res.json({profile})
     } catch (error) {
         console.log("profile get",error)

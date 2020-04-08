@@ -9,24 +9,51 @@ class Profile extends React.Component{
         super()
         this.state={
             profileArticles:null,
-            myArticleFeed:false,
+            myArticleFeed:true,
             favouritedArticle:null
         }
     }
 
     componentDidMount(){
-        axios(`/api/articles?author=${this.props.match.params.username}`,{
+        // axios(`/api/articles?author=${this.props.match.params.username}`,{
+        //     method:"GET",
+        //     headers:{
+        //         "Content-Type":"applicaion/json",
+        //         "authorization":localStorage.token||""
+        //     }
+        // }).then(res=>
+        //     this.setState({
+        //         profileArticles:res.data
+        //     })
+            
+        // )
+
+        const myarticles = axios(`/api/articles?author=${this.props.match.params.username}`,{
             method:"GET",
             headers:{
-                "Content-Type":"applicaion/json",
-                "authorization":localStorage.token||""
+                'content-type':'application/json'
             }
-        }).then(res=>
-            this.setState({
-                profileArticles:res.data
+        })
+
+        const favouritedArticles = axios(`/api/user/${this.props.match.params.username}/favourited`,{
+            method:"GET",
+            headers:{
+                'content-type':'application/json',
+                'authorization':localStorage.token||''
+            }
+        })
+
+        Promise.all([myarticles,favouritedArticles])
+        .then(res=>{console.log(res[0])
+            return this.setState({
+                profileArticles:res[0].data,
+                favouritedArticle:res[1].data
             })
-            
-        )
+        })
+        // .then(res=>this.setState({
+        //     myArticleFeed:res[0][0].data,
+        //     // favouritedArticle:res[1].data
+        // }))
     }
     handleMyArticle=()=>{
         this.setState({
@@ -52,6 +79,7 @@ class Profile extends React.Component{
                     <hr className="border border-success w-75 ml-0" />
                 </div>
                 {
+                    this.state.myArticleFeed &&
                     this.state.profileArticles ? this.state.profileArticles.map(article=>{
                         return(<>
                             <div className="p-2">
@@ -72,8 +100,29 @@ class Profile extends React.Component{
                                     <hr />
                         </>)
 
+                    }):this.state.favouritedArticle ? this.state.favouritedArticle.favouriteArticles.map(article=>{
+                        return(
+                            <>
+                            <div className="p-2">
+										<div className="d-flex">
+											<img src="https://i.imgur.com/g5qR3O8.png" style={{width:"50px",borderRadius:"50%"}}/>
+											<div className="ml-2">
+                                                <p className="text-success">{article.title}</p>
+												{/* <h6 className="mb-1" style={{fontSize:"13px",fontWeight:"300",color:"grey"}}>{article.authorId.username}</h6> */}
+												<small className="text-disable">Created At:{article.createdAt.split("T")[0]}</small>
+                                            </div>
+										</div>
+                                        <p className="p-3">{article.description}</p>
+                                        <Link className="text-secondary pl-3" style={{fontSize:"14px"}} to={`/articles/p/${article.slug}`}>Read more</Link>
+                                        <div>
+                                        </div>
+									{/* </div> */}
+									</div>
+                                    <hr />
+                            </>
+                        )
                     })
-                    :<Spinner/>
+                    :<Spinner />
                 }
                 </div>
             </div>

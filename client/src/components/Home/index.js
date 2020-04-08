@@ -17,7 +17,8 @@ class Home extends React.Component{
 			globalfeed:true,
 			tagArticles:null,
 			currentTag:null,
-			updated:[]
+			updated:[],
+			tags:null
 		}
 	}
     handleClickFeed=()=>{
@@ -45,14 +46,24 @@ class Home extends React.Component{
 		// 	console.log(res)
 			
 		// )
-		axios("/api/articles",{
+
+		const tagArticles = axios(`/api/tags`,{
+			method:"GET",
+			headers:{
+				'content-type':'application/json'
+			}
+		})
+		const articles = axios("/api/articles",{
 			method:"GET",
 			headers:{
 				"Content-Type":"application/json"
 			}
-		}).then(res=>
+		})
+		Promise.all([tagArticles, articles])
+		.then(res=>
 			this.setState({
-				updated:res.data
+				updated:res[1].data,
+				tags:res[0].data
 			})
 		)
 	}
@@ -160,7 +171,7 @@ class Home extends React.Component{
 					<p className="pt-3 pl-3">Popular tags</p>
 					<div className="d-flex pl-3 flex-wrap ">
 					{
-						this.props && this.props.tags? this.props.tags.map((tag,index)=>{
+						this.props && this.state.tags? this.state.tags.map((tag,index)=>{
 							return(
 								<div onClick={()=>this.handleClick(tag)}  className="border rounded-pill p-1 mb-1" key={index} style={{backgroundColor:'rgb(129,138,145)',color:"white",fontSize:"12px",cursor:"pointer"}}>
 									{tag}
