@@ -71,6 +71,20 @@ class App extends React.Component{
     )
   }
   
+  handleFollow=(attrib)=>{
+    axios(`/api/profiles/${attrib}/follow`,{
+      method:"POST",
+      headers:{
+        'authorization':localStorage.token||"",
+        'content-type':'application/json'
+      }
+    }).then(
+      res=>this.setState({
+        userInfo:res.data
+      })
+    )
+    // console.log(attrib,"yellallluu")
+  }
   privateRoutes=()=>{
     console.log('called in private')
 
@@ -85,7 +99,7 @@ class App extends React.Component{
         <Route path="/setting">
           <Setting user={this.state.userInfo && this.state.userInfo} Logout={this.userLoggedOut}/>
         </Route>
-        <Route path="/profile/:username" render={(props)=><Profile {...props} currentUser={this.state.userInfo}/>} />
+        <Route path="/profile/:username" render={(props)=><Profile {...props} currentUser={this.state.userInfo} followUser={this.handleFollow}/>} />
         <Route exact path="/home">
           <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
         </Route>
