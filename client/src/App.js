@@ -85,7 +85,7 @@ class App extends React.Component{
         <Route path="/setting">
           <Setting user={this.state.userInfo && this.state.userInfo} Logout={this.userLoggedOut}/>
         </Route>
-        <Route path="/profile/:username" render={(props)=><Profile {...props}/>} />
+        <Route path="/profile/:username" render={(props)=><Profile {...props} currentUser={this.state.userInfo}/>} />
         <Route exact path="/home">
           <Home userStatus={this.state.currentUser} articles={this.state.articles} tags={this.state.tags}/>
         </Route>

@@ -65,10 +65,11 @@ class Profile extends React.Component{
             myArticleFeed:false
         })
     }
+    
     render(){
         return(
             <>
-            <Hero title={this.props.match.params.username} />
+            <Hero title={this.props.match.params.username} currentUser={this.props.currentUser}/>
             <div className="container p-4">
                 <div className="col-md-8">
                 <div style={{width:'200px'}}>
